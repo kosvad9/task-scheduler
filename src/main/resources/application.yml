@@ -1,0 +1,24 @@
+jwt.secretKey: '{"kty":"oct","k":"i87sIKs6OSgSt_6tvcr8xQ"}'
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: masterkey
+    hikari:
+      schema: tasks
+  liquibase:
+    default-schema: tasks
+    liquibase-schema: tasks
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+logging:
+  file:
+    name: log.log
+    path: /
+  level:
+    root: info
+    org.springframework.security : trace
