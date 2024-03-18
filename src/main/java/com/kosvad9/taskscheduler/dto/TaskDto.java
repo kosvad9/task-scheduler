@@ -9,12 +9,12 @@ public record TaskDto(
                       Long id,
                       String header,
                       String text,
-                      Boolean status,
+                      boolean completeStatus,
                       LocalDateTime completeTime) {
     public TaskDto {
     }
 
-    public TaskDto(String header, String text, Boolean status, LocalDateTime completeTime) {
-        this(null, header, text, status, completeTime);
+    public TaskDto(String header, String text, boolean completeStatus, LocalDateTime completeTime) {
+        this(null, header, text, completeStatus, completeTime);
     }
 }

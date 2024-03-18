@@ -23,9 +23,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDto getUser(Long id){
-        return userRepository.findUserById(id)
-                .map(user -> new UserDto(user.getId(), user.getLogin()))
-                .orElse(null);
+        User user = userRepository.getReferenceById(id);
+        return new UserDto(user.getId(), user.getLogin());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

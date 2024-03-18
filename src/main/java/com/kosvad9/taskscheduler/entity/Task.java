@@ -2,6 +2,7 @@ package com.kosvad9.taskscheduler.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name="tasks")
 @Entity
 public class Task {
@@ -21,7 +23,7 @@ public class Task {
 
     private String text;
 
-    private Boolean status;
+    private Boolean completeStatus;
 
     private LocalDateTime completeTime;
 

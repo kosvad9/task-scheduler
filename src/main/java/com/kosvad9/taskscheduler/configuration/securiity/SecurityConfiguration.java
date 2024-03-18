@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.GET,"/user").authenticated()
-                        .requestMatchers("/tasks").authenticated()
+                        .requestMatchers("/tasks/**").authenticated()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.csrfTokenRepository(new CookieCsrfTokenRepository())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())

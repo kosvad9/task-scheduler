@@ -1,15 +1,14 @@
 package com.kosvad9.taskscheduler.controller;
 
 import com.kosvad9.taskscheduler.configuration.securiity.CookieFactory;
-import com.kosvad9.taskscheduler.configuration.securiity.JWTSerializer;
 import com.kosvad9.taskscheduler.configuration.securiity.TokenFactory;
 import com.kosvad9.taskscheduler.dto.Token;
 import com.kosvad9.taskscheduler.dto.UserLoginDto;
 import com.kosvad9.taskscheduler.dto.UserDto;
+import com.kosvad9.taskscheduler.exception.ValidException;
 import com.kosvad9.taskscheduler.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,7 +36,7 @@ public class UserController {
     @PostMapping("/user")
     public void createUser(@RequestBody @Validated UserLoginDto userLoginDto,
                            BindingResult bindingResult, HttpServletResponse httpServletResponse){
-        if (bindingResult.hasErrors()) throw new ValidationException();
+        if (bindingResult.hasErrors()) throw new ValidException(bindingResult);
         UserDto user = userService.createUser(userLoginDto);
         httpServletResponse.addCookie(generateCookieToken(user));
     }
@@ -54,8 +53,7 @@ public class UserController {
 
     private Cookie generateCookieToken(UserDto userDto){
         Token token = jwtFactory.apply(userDto);
-        Cookie cookie = cookieFactory.createCookie(token,
+        return cookieFactory.createCookie(token,
                 (int) ChronoUnit.SECONDS.between(Instant.now(),token.expiresAt()));
-        return cookie;
     }
 }
