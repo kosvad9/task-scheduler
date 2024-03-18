@@ -8,18 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
-import java.security.SecureRandom;
 import java.text.ParseException;
 
 @Configuration
@@ -29,15 +27,15 @@ public class SecurityConfiguration {
                                          JWTCookieAuthConfigurer jwtCookieAuthConfigurer) throws Exception {
 
         httpSecurity
-                .httpBasic(customizer -> customizer.disable())
-                .formLogin(customizer -> customizer.disable())
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(customizer -> customizer
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/user").permitAll()
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.GET,"/user").authenticated()
-                        .requestMatchers("/tasks/**").authenticated()
+                        .requestMatchers("/task/**").authenticated()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.csrfTokenRepository(new CookieCsrfTokenRepository())
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())

@@ -20,7 +20,7 @@ public class JWTSerializer implements Function<Token, String> {
 
     private final JWEAlgorithm jweAlgorithm;
 
-    private EncryptionMethod encryptionMethod = EncryptionMethod.A128GCM;
+    private final EncryptionMethod encryptionMethod = EncryptionMethod.A128GCM;
 
     @Override
     public String apply(Token token) {
@@ -40,9 +40,5 @@ public class JWTSerializer implements Function<Token, String> {
             log.error(e.toString());
         }
         return null;
-    }
-
-    public void setEncryptionMethod(EncryptionMethod encryptionMethod) {
-        this.encryptionMethod = encryptionMethod;
     }
 }

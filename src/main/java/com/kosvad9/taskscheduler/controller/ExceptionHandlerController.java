@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
 public class ExceptionHandlerController {
     @ExceptionHandler({ValidException.class})
     public ResponseEntity<ErrorDto> validationException(ValidException e){
-        String error = e.bindingResult.getAllErrors().stream()
-                .map(objectError -> objectError.getDefaultMessage())
-                .collect(Collectors.joining(";\n"));
+
+        String error = e.bindingResult.getFieldErrors().stream()
+                .map(objectError -> objectError.getField() + " " +
+                                            objectError.getDefaultMessage())
+                .collect(Collectors.joining("; "));
         log.error(error);
-        return new ResponseEntity<>(new ErrorDto("Ошибка валидации входных данных;\n"+error),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDto("Ошибка валидации входных данных; "+error),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({EmailTakenException.class})

@@ -3,13 +3,10 @@ package com.kosvad9.taskscheduler.configuration.securiity;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 
@@ -35,8 +32,9 @@ public class CookieAuthConverter implements AuthenticationConverter {
                     .map(cookie -> {
                         var token = jwtDeserializer.apply(cookie.getValue());
                         return new PreAuthenticatedAuthenticationToken(token, cookie.getValue());
-                    }).orElse(null);
+                    }).orElse(null);//Throw(() -> new AuthenticationCredentialsNotFoundException("Не авторизован!"));
         }
         return null;
+        //throw new AuthenticationCredentialsNotFoundException(" авторизован!");
     }
 }
