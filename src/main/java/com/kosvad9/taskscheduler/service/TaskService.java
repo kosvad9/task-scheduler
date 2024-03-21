@@ -1,5 +1,7 @@
 package com.kosvad9.taskscheduler.service;
 
+import com.kosvad9.core.TaskDetail;
+import com.kosvad9.core.TaskReport;
 import com.kosvad9.taskscheduler.dto.TaskDto;
 import com.kosvad9.taskscheduler.entity.Task;
 import com.kosvad9.taskscheduler.entity.User;
@@ -13,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -63,5 +68,21 @@ public class TaskService {
     public void deleteTask(Long userId, Long taskId){
         Task task = taskRepository.getTaskByIdAndUserId(taskId, userId);
         taskRepository.delete(task);
+    }
+
+    public List<TaskReport> getTasksForReport(LocalDateTime from, LocalDateTime to){
+        List<Task> tasks = taskRepository.findTasksByCompleteStatusIsFalseOrCompleteTimeBetween(from, to);
+        Map<String, List<Task>> map = tasks.stream()
+                .collect(Collectors.groupingBy(task -> task.getUser().getLogin()));
+        return map.entrySet().stream()
+                .map(entry -> {
+                        List<TaskDetail> list = entry.getValue().stream()
+                                .map(task -> new TaskDetail(task.getHeader(),
+                                                                    task.getCompleteStatus(),
+                                                                    task.getCompleteTime()))
+                                .toList();
+                        return new TaskReport(entry.getKey(), list);
+                    })
+                .toList();
     }
 }

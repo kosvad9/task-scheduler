@@ -1,0 +1,29 @@
+kafka:
+  emailTopic: "email-messages-topic"
+mail:
+  from: ${SMTP.emailfrom}
+spring:
+  mail:
+    host: smtp.yandex.ru
+    port: 465
+    username: ${SMTP.username}
+    password: ${SMTP.password}
+    protocol: smtps
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: mail-sender
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+          json:
+            trusted:
+              packages: com.kosvad9.core
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

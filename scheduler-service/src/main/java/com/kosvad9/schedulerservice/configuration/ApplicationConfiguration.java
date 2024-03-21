@@ -1,4 +1,4 @@
-package com.kosvad9.taskscheduler.configuration;
+package com.kosvad9.schedulerservice.configuration;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,23 +13,12 @@ import org.springframework.util.backoff.FixedBackOff;
 
 @Configuration
 public class ApplicationConfiguration {
-
-    @Value("${kafka.emailTopic}")
-    private String EMAIL_TOPIC;
-
-    @Value("${kafka.taskReportsTopic}")
-    private String TASK_REPORTS_TOPIC;
-
-    @Bean
-    public NewTopic emailMessagesTopic(){
-        return TopicBuilder.name(EMAIL_TOPIC).build();
-    }
-
+    @Value("${kafka.requestTasksTopic}")
+    private String REQUEST_TASKS_TOPIC;
     @Bean
     public NewTopic taskReportsTopic(){
-        return TopicBuilder.name(TASK_REPORTS_TOPIC).build();
+        return TopicBuilder.name(REQUEST_TASKS_TOPIC).build();
     }
-
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Object> concurrentKafkaListenerContainerFactoryConfig(
             ConcurrentKafkaListenerContainerFactory<String, Object> factory,

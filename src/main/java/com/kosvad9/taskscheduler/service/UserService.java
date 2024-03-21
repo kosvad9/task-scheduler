@@ -21,6 +21,7 @@ import java.util.Collections;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KafkaService kafkaService;
 
     public UserDto getUser(Long id){
         User user = userRepository.getReferenceById(id);
@@ -34,6 +35,7 @@ public class UserService {
                 .login(userLoginDto.email())
                 .password(passwordEncoder.encode(userLoginDto.password())).build();
         userRepository.saveAndFlush(newUser);
+        kafkaService.sendRegistrationMessage(newUser.getLogin());
         return new UserDto(newUser.getId(), newUser.getLogin());
     }
 
