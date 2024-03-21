@@ -1,5 +1,6 @@
 package com.kosvad9.schedulerservice.listener;
 
+import com.kosvad9.core.ListTaskReports;
 import com.kosvad9.core.TaskReport;
 import com.kosvad9.schedulerservice.service.KafkaService;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +18,9 @@ import java.util.List;
 public class ReportsTopicListener {
     private final KafkaService kafkaService;
     @KafkaHandler
-    public void handleReports(List<TaskReport> reports){
+    public void handleReports(ListTaskReports reports){
         try {
-            kafkaService.sendReportMessage(reports);
+            kafkaService.sendReports(reports.taskReportList());
         } catch(Exception e) {
             log.error(e.getMessage());
         }

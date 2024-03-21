@@ -1,5 +1,6 @@
 package com.kosvad9.taskscheduler.service;
 
+import com.kosvad9.core.ListTaskReports;
 import com.kosvad9.core.TaskDetail;
 import com.kosvad9.core.TaskReport;
 import com.kosvad9.taskscheduler.dto.TaskDto;
@@ -70,11 +71,11 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    public List<TaskReport> getTasksForReport(LocalDateTime from, LocalDateTime to){
+    public ListTaskReports getTasksForReport(LocalDateTime from, LocalDateTime to){
         List<Task> tasks = taskRepository.findTasksByCompleteStatusIsFalseOrCompleteTimeBetween(from, to);
         Map<String, List<Task>> map = tasks.stream()
                 .collect(Collectors.groupingBy(task -> task.getUser().getLogin()));
-        return map.entrySet().stream()
+        return new ListTaskReports(map.entrySet().stream()
                 .map(entry -> {
                         List<TaskDetail> list = entry.getValue().stream()
                                 .map(task -> new TaskDetail(task.getHeader(),
@@ -83,6 +84,6 @@ public class TaskService {
                                 .toList();
                         return new TaskReport(entry.getKey(), list);
                     })
-                .toList();
+                .toList());
     }
 }

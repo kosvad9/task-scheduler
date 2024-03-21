@@ -1,6 +1,7 @@
 package com.kosvad9.taskscheduler.service;
 
 import com.kosvad9.core.EmailMessageEvent;
+import com.kosvad9.core.ListTaskReports;
 import com.kosvad9.core.TaskReport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class KafkaService {
     private final KafkaTemplate<String, EmailMessageEvent> kafkaTemplateEmail;
-    private final KafkaTemplate<String, List<TaskReport>> kafkaTemplateReports;
+    private final KafkaTemplate<String, ListTaskReports> kafkaTemplateReports;
 
     @Value("${kafka.emailTopic}")
     private String EMAIL_TOPIC;
@@ -39,7 +40,7 @@ public class KafkaService {
         });
     }
 
-    public void sendTaskReports(List<TaskReport> reports){
+    public void sendTaskReports(ListTaskReports reports){
         var result = kafkaTemplateReports.send(TASK_REPORTS_TOPIC, reports);
         result.whenComplete((sendResult, exception) -> {
             if (exception != null){
