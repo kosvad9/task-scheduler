@@ -53,7 +53,8 @@ jobs:
     - name: build and push mail-sender-service image    
       uses: docker/build-push-action@v3
       with:
-        context: ./mail-sender-service
+        context: .
+        path: mail-sender-service
         push: true
         tags: ${{ steps.meta-mail-sender-service.outputs.tags}}
         labels: ${{ steps.meta-mail-sender-service.outputs.labels}}
@@ -61,7 +62,8 @@ jobs:
     - name: build and push scheduler-service image    
       uses: docker/build-push-action@v3
       with:
-        context: ./scheduler-service
+        context: .
+        path: scheduler-service
         push: true
         tags: ${{ steps.meta-scheduler-service.outputs.tags}}
         labels: ${{ steps.meta-scheduler-service.outputs.labels}}
