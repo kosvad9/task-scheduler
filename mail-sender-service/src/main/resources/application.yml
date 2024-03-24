@@ -1,7 +1,7 @@
 kafka:
   emailTopic: "email-messages-topic"
 mail:
-  from: ${SMTP.emailfrom}
+  from: ${SMTP.emailFrom}
 spring:
   mail:
     host: smtp.yandex.ru

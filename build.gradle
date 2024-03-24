@@ -30,6 +30,22 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 }
 
+gradle.taskGraph.whenReady { graph ->
+	def hasRootRunTask = graph.hasTask(':bootJar')
+	if (hasRootRunTask) {
+		graph.getAllTasks().each { task ->
+			def subRunTask = (task.path =~ /:(mail-sender-service|scheduler-service):.+/)
+			if (subRunTask) {
+				task.enabled = false
+			}
+		}
+	}
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar{
+	archiveFileName.set("${project.name}.jar")
 }

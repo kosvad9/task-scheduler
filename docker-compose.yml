@@ -1,0 +1,80 @@
+version: '3.9'
+services:
+  task-scheduler:
+    image: task-scheduler
+    container_name: task-scheduler
+    ports:
+      - '1204:8080'
+    restart: unless-stopped
+    depends_on:
+      - mail-sender-service
+      - scheduler-service
+      - kafka
+      - postgres
+    environment:
+      KAFKA_URL: kafka:9092
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/$POSTGRES_USERNAME
+      POSTGRES_USERNAME: $POSTGRES_USERNAME
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    networks:
+      - public
+      - local
+##########################
+  scheduler-service:
+    image: scheduler-service
+    container_name: scheduler-service
+    restart: unless-stopped
+    environment:
+      - KAFKA_URL=kafka:9092
+    depends_on:
+      - kafka
+    networks:
+      - local
+##########################
+  mail-sender-service:
+    image: mail-sender-service
+    container_name: mail-sender-service
+    restart:  unless-stopped
+    environment:
+      KAFKA_URL: kafka:9092
+      SMTP_MAIL_FROM: $SMTP_MAIL_FROM
+      SMTP_LOGIN: $SMTP_LOGIN
+      SMTP_PASSWORD: $SMTP_PASSWORD
+    depends_on:
+      - kafka
+    networks:
+      - local
+###########################
+  postgres:
+    image: postgres:16.2-alpine3.19
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: $POSTGRES_USERNAME
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - /Users/vadim/postgres/data:/var/lib/postgresql/data
+    networks:
+      - local
+#################################
+  kafka:
+    image: bitnami/kafka:3.4.1
+    container_name: kafka
+    restart: unless-stopped
+    environment:
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka:9093
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+    networks:
+      - local
+networks:
+  public:
+    name: public
+    driver: bridge
+  local:
+    name: local
+    driver: bridge

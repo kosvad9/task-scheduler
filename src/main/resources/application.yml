@@ -1,5 +1,7 @@
 jwt:
   secretKey: '{"kty":"oct","k":"i87sIKs6OSgSt_6tvcr8xQ"}'
+db:
+  schema: tasks
 kafka:
   emailTopic: "email-messages-topic"
   requestTasksTopic: "request-task-reports-topic"
@@ -32,10 +34,10 @@ spring:
     username: postgres
     password: masterkey
     hikari:
-      schema: tasks
+      schema: ${db.schema}
   liquibase:
-    default-schema: tasks
-    liquibase-schema: tasks
+    default-schema: ${db.schema}
+    liquibase-schema: ${db.schema}
   jpa:
     properties:
       hibernate:
@@ -47,4 +49,4 @@ logging:
     path: /
   level:
     root: info
-    org.springframework.security : trace
+#    org.springframework.security : trace
